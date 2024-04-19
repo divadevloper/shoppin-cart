@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>One Prod</h1>
+    <div id="dispProd"></div>
+</body>
+</html>
+
+<script>
+    let prodId = localStorage.getItem("prodId");
+    console.log(prodId);
+    let prod;
+    let dispProd = document.getElementById("dispProd");
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    console.log(cart);
+    function fetchProd() {
+        fetch(`https://dummyjson.com/products/${prodId}`)
+            .then(result => result.json())
+            .then(data => {
+                console.log(data);
+                prod = data;
+                let alreadyAdded = cart.find((el)=> el.id == prod.id);
+
+                dispProd.innerHTML = `
+                    <img src="${prod.thumbnail}" />
+                    ${alreadyAdded ?
+                    "<button onclick='removeFromCart()'>Remove</button>":
+                    "<button onclick='addToCart()'>Add</button>"
+                    }
+                `
+            })
+    }
+    fetchProd();
+
+    function addToCart(){
+        let alreadyAdded = cart.find((el)=> el.id == prodId);
+        if(alreadyAdded){
+            alert("Product already in cart");
+            return;
+        }else{
+            cart.push(prod);
+            localStorage.setItem("cart", JSON.stringify(cart));
+            alert("Product added")
+        }
+    }
+
+    function removeFromCart(){
+        console.log(prodId);
+        let prod = cart.find((el)=> el.id == prodId);
+
+    }
+</script>
